@@ -5,6 +5,7 @@
 #include<optional>
 #include<iostream>
 #include<compare>
+#include<utility>
 #include<ext/pb_ds/assoc_container.hpp>
 #include<ext/pb_ds/tree_policy.hpp>
 
@@ -37,10 +38,12 @@ namespace reverSilly::ICPC
 	};
 	struct ProblemStatus//status for problem of every group
 	{
-		Problem *const problem;
+		Problem const*const problem;
 		bool accepted;
 		int tries;
 		std::vector<Submission>submissions[4];//assert count(Submission status)=4
+		
+		ProblemStatus(Problem const*p):problem{p}{}
 		struct FrozenInfo
 		{
 			int triesBefore;
@@ -72,8 +75,8 @@ namespace reverSilly::ICPC
 									 __gnu_pbds::tree_order_statistics_node_update>;
 	struct TeamRef
 	{
-		Team *t;
-		friend bool operator<(TeamRef a,TeamRef b){return *a.t<*b.t;}
+		Team const*t;
+		friend std::strong_ordering operator<=>(TeamRef a,TeamRef b){return *a.t<=>*b.t;}
 	};
 	struct Contest
 	{
@@ -83,16 +86,18 @@ namespace reverSilly::ICPC
 			Set rank;
 			std::unordered_map<std::string,std::pair<Team,Set::iterator>>teams;
 
-			Team *teamByRank(int rank)const;//teams.rank();
-			Team *teamByName(std::string_view)const;//Teams
+			Team const*teamByRank(int rank)const;//teams.rank();
+			Team const*teamByName(std::string_view)const;//Teams
+			int rankByTeam(Team const*)const;
 
-			void addTeam(Team t);//rank,teams
-			void start(int n);//team.status
-			void refresh(Team *team,std::function<void(Team&)>);//erase iterator,do,insert iterator
+			void addTeam(Team const&);//rank,teams
+			void addProblem(Problem const*);//team.status
+			void refresh(Team const*team,std::function<void(Team&)>);//erase iterator,do,insert iterator
 		}teams;
 		std::unordered_map<std::string,Problem> problems;
 		std::optional<Time>duration;
-		void addTeam();//Rankedteams, Teams
+
+		void addTeam(Team const&);//Rankedteams, Teams
 		void addProblem(Problem &&p);//problems
 		void start(Time duration);//team.init, duration init.
 		void flush(std::ostream&);//teams,status.accepted,team.penalty(),status.str()
