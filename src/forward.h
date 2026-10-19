@@ -67,6 +67,7 @@ namespace reverSilly::ICPC
 		Time penalty()const;//sigma status.penalty()
 		int accepted()const;//sigma status.accepted;
 		void add(Submission s);//status.add
+		bool hasFrozen()const;
 		friend std::strong_ordering operator<=>(const Team &a,const Team &b);//accepted|penalty|pass_time...|name
 	};
 	template<typename T>
@@ -87,26 +88,29 @@ namespace reverSilly::ICPC
 			std::unordered_map<std::string,std::pair<Team,Set::iterator>>teams;
 
 			Team const*teamByRank(int rank)const;//teams.rank();
-			Team const*teamByName(std::string_view)const;//Teams
+			Team const*teamByName(std::string const&)const;//Teams
 			int rankByTeam(Team const*)const;
 
 			void addTeam(Team const&);//rank,teams
 			void addProblem(Problem const*);//team.status
-			void refresh(Team const*team,std::function<void(Team&)>);//erase iterator,do,insert iterator
+			void refresh(const std::string &team,std::function<void(Team&)>,Set*);//erase iterator,do,insert iterator
 		}teams;
 		std::unordered_map<std::string,Problem> problems;
 		std::optional<Time>duration;
+		bool frozen;
 
-		void addTeam(Team const&);//Rankedteams, Teams
-		void addProblem(Problem &&p);//problems
-		void start(Time duration);//team.init, duration init.
-		void flush(std::ostream&);//teams,status.accepted,team.penalty(),status.str()
+		void addTeam(Team const&);// wrapper
+		void addProblem(Problem &&p);//problems, after all addTeam
+		void start(Time duration);// duration init.
+		void flush(std::ostream&)const;//teams,status.accepted,team.penalty(),status.str()
 		void freeze();//forevery team.status not accepted freeze
 		void submit(Submission);//teams.refresh(add)
 		void scroll(std::ostream&);//flush,team.refresh(unfreeze)...,flush
-		int rankByTeam(Team *team);//teams.find
 		Submission *query(Team *team,Problem *problem,Submission::Status)const;
 		//team.status
 		void end();//clear duration
+
+		void assertStarted()const;
+		void assertNotStarted()const;
 	};
 }

@@ -9,9 +9,9 @@ namespace reverSilly::ICPC
 	{
 		return rank.find_by_order(r)->t;
 	}
-	Team const*Contest::TeamInfo::teamByName(std::string_view sv)const
+	Team const*Contest::TeamInfo::teamByName(std::string const &sv)const
 	{
-		auto it=teams.find(std::string(sv));
+		auto it=teams.find(sv);
 		if(it!=teams.end())
 			return &it->second.first;
 		return nullptr;
@@ -34,13 +34,17 @@ namespace reverSilly::ICPC
 		for(auto &[k,v]:teams)
 			v.first.status.emplace_back(p);
 	}
-	void Contest::TeamInfo::refresh(Team const *team,std::function<void(Team&)> F)
+	void Contest::TeamInfo::refresh(std::string const &s,std::function<void(Team&)>F,Set*sup)
 	{
-		auto &obj=teams.at(team->name);
+		auto &obj=teams.at(s);
 		rank.erase({&obj.first});
+		if(sup)
+			sup->erase({&obj.first});
 		F(obj.first);
 		auto[it,_]=rank.insert({&obj.first});
 		obj.second=it;
 		assert(_);
+		if(sup)
+			sup->insert({&obj.first});
 	}
 }

@@ -1,0 +1,128 @@
+#include"forward.h"
+
+namespace reverSilly::ICPC
+{
+	void Contest::assertStarted()const
+	{
+		if(!duration.has_value())
+			throw std::logic_error{"Contest not started"};
+	}
+	void Contest::assertNotStarted()const
+	{
+		if(duration.has_value())
+			throw std::logic_error{"Contest already started"};
+	}
+
+	void Contest::addTeam(Team const &t)
+	{
+		assertNotStarted();
+		teams.addTeam(t);
+	}
+	void Contest::addProblem(Problem &&p)
+	{
+		assertNotStarted();
+		auto [it,_]=problems.insert({p.name,std::move(p)});
+		if(!_)
+			throw std::invalid_argument{"Problem already exist"};
+		teams.addProblem(&it->second);
+	}
+	void Contest::start(Time duration)
+	{
+		assertNotStarted();
+		this->duration=duration;
+	}
+	void Contest::flush(std::ostream &os)const
+	{
+		assertStarted();
+		int rank=0;
+		for(auto i:teams.rank)
+		{
+			auto &t=*i.t;
+			os<<t.name<<' '<<rank+1<<' '<<t.accepted()<<' '<<t.penalty().t<<' ';
+			for(auto &s:t.status)
+				os<<s.str()<<' ';
+			os<<'\n';
+			++rank;
+		}
+	}
+	void Contest::freeze()
+	{
+		assertStarted();
+		if(frozen)
+			throw std::logic_error{"already frozen"};
+		for(auto &[k,v]:teams.teams)
+		{
+			auto &[team,it]=v;
+			for(auto &p:team.status)
+			{
+				assert(!p.isFrozen());
+				if(!p.isAccepted())
+					p.freeze();
+			}
+		}
+		frozen=true;
+	}
+	void Contest::submit(Submission s)
+	{
+		assertStarted();
+		teams.refresh(s.owner->name,[s](Team &t){t.add(s);},nullptr);
+	}
+	void Contest::scroll(std::ostream &os)
+	{
+		assertStarted();
+		if(!frozen)
+			throw std::logic_error{"not frozen"};
+		frozen=false;
+		flush(os);
+		TeamInfo::Set frozenTeam;
+		for(auto&[k,v]:teams.teams)
+		{
+			if(v.first.hasFrozen())
+				frozenTeam.insert({&v.first});
+		}
+		while(!frozenTeam.empty())
+		{
+			auto t=frozenTeam.rbegin()->t;
+			int rk1=teams.rankByTeam(t);
+			teams.refresh(t->name,[](Team &t)
+			{
+				for(auto &p:t.status)
+				{
+					if(p.isFrozen())
+					{
+						p.unfreeze();
+						return;
+					}
+				}
+			},&frozenTeam);
+			int rk2=teams.rankByTeam(t);
+			if(!t->hasFrozen())
+				frozenTeam.erase({t});
+			os<<t->name<<' ';
+			if(rk2==rk1)
+				os<<t->name<<' ';
+			else if(rk1<rk2)
+				os<<teams.teamByRank(rk2-1)->name<<' ';
+			else if(rk2<rk1)
+				os<<teams.teamByRank(rk2+1)->name<<' ';
+			else assert(false);
+			os<<t->accepted()<<' '<<t->penalty().t<<'\n';
+		}
+		flush(os);
+	}
+	Submission *Contest::query(Team *team,Problem *problem,Submission::Status s)const
+	{
+		assertStarted();
+		auto ss=static_cast<std::size_t>(s);
+		auto &submits=team->status[problem->id].submissions;
+		if(submits[ss].empty())
+			throw std::out_of_range{"no submission match the requirement"};
+		return &submits[ss].back();
+	}
+	void Contest::end()
+	{
+		assertStarted();
+		duration.reset();
+		assert(frozen==false);
+	}
+}
