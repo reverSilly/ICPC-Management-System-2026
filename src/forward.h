@@ -36,7 +36,7 @@ namespace reverSilly::ICPC
 	};
 	struct ProblemStatus//status for problem of every group
 	{
-		Problem *problem;
+		Problem *const problem;
 		bool accepted;
 		int tries;
 		std::vector<Submission>submissions[4];//assert count(Submission status)=4
@@ -46,13 +46,15 @@ namespace reverSilly::ICPC
 			int triesAfter;
 		};
 		std::optional<FrozenInfo>frozen;//tries after frozen
+		
 		std::string str()const;//check: frozen and triesAfter neq 0->frozen, else regular.
 		void freeze();//set frozen
 		void unfreeze();//reset frozen
+		bool isFrozen()const;
 		void add(Submission s);//update accepted/tries/submissions
-		bool accepted()const;//wrapper:reply no for frozen
-		Time acceptedTime()const;//wrapper
-		Time penalty()const;//0 if not accepted/frozen, tries*20+submits[Accepted].front().time
+		bool isAccepted()const;//wrapper:reply no for frozen
+		Time acceptedTime()const;//wrapper submits[Accepted].front().time
+		Time penalty()const;//0 if not accepted/frozen, tries*20+AcTime
 	};
 	struct Team
 	{
