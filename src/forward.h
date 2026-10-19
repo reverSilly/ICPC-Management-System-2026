@@ -84,15 +84,15 @@ namespace reverSilly::ICPC
 		std::vector<int>AcceptedTime;
 		std::string_view name;
 
-		TeamRef(Team const &t)
+		TeamRef(Team const &t):accepted{-t.accepted()},spenalty{},name{t.name}
 		{
-			accepted=-t.accepted();
 			AcceptedTime.reserve(t.status.size());
 			for(auto &i:t.status)
+			{
 				if(i.isAccepted())
 					AcceptedTime.push_back(i.acceptedTime().t);
-			spenalty=std::accumulate(AcceptedTime.begin(),AcceptedTime.end(),0);
-			name=t.name;
+				spenalty+=i.penalty();
+			}
 		}
 		friend std::strong_ordering operator<=>(TeamRef a,TeamRef b)=default;
 	};
