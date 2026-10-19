@@ -80,18 +80,21 @@ int main()
 		if(op=="SUBMIT")
 		{
 			cin>>problem>>"BY">>team>>"WITH">>status>>"AT">>time;
+			static int cnt=0;
 			Submission s
 			{
 				.problem=&c.problems.find(problem)->second,
 				.owner=c.teams.teamByName(team),
 				.status=fromStr(status),
-				.time={time}
+				.time={time},
+				.id=cnt++
 			};
 			c.submit(s);
 		}
 		if(op=="FLUSH")
 		{
 			info("Flush scoreboard.");
+			c.flush();
 		}
 		if(op=="FREEZE")
 		{
@@ -153,8 +156,8 @@ int main()
 				else
 				{
 					auto mx=
-						max_element(candidate.begin(),candidate.end(),
-						[](Submission a,Submission b){return a.time.t<b.time.t;});
+						max_element(candidate.rbegin(),candidate.rend(),
+						[](Submission a,Submission b){return a.id<b.id;});
 					cout<<t->name<<' '<<mx->problem->name<<' '<<toStr(mx->status)<<' '<<mx->time.t<<'\n';
 				}
 			}

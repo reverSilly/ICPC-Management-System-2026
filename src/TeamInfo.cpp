@@ -18,7 +18,10 @@ namespace reverSilly::ICPC
 	}
 	int Contest::TeamInfo::rankByTeam(Team const *t)const
 	{
-		return rank.order_of_key(TeamRef{*t});
+		auto it=teams.find(t->name);
+		if(it!=teams.end())
+			return rank.order_of_key(*it->second.second);
+		throw std::out_of_range{"cannot find the team"};
 	}
 	void Contest::TeamInfo::addTeam(Team const &t)
 	{

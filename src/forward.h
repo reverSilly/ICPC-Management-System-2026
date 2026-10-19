@@ -32,6 +32,7 @@ namespace reverSilly::ICPC
 		}status;
 		bool isAccepted()const;
 		Time time;
+		int id;
 	};
 	struct Problem
 	{
@@ -80,16 +81,17 @@ namespace reverSilly::ICPC
 	struct TeamRef
 	{
 		int accepted,spenalty;
-		std::vector<int>penalty;
+		std::vector<int>AcceptedTime;
 		std::string_view name;
 
 		TeamRef(Team const &t)
 		{
 			accepted=-t.accepted();
-			penalty.reserve(t.status.size());
+			AcceptedTime.reserve(t.status.size());
 			for(auto &i:t.status)
-				penalty.push_back(i.penalty().t);
-			spenalty=std::accumulate(penalty.begin(),penalty.end(),0);
+				if(i.isAccepted())
+					AcceptedTime.push_back(i.acceptedTime().t);
+			spenalty=std::accumulate(AcceptedTime.begin(),AcceptedTime.end(),0);
 			name=t.name;
 		}
 		friend std::strong_ordering operator<=>(TeamRef a,TeamRef b)=default;
