@@ -4,6 +4,7 @@
 #include<unordered_map>
 #include<optional>
 #include<iostream>
+#include<compare>
 #include<ext/pb_ds/assoc_container.hpp>
 #include<ext/pb_ds/tree_policy.hpp>
 
@@ -60,10 +61,10 @@ namespace reverSilly::ICPC
 	{
 		std::string const name;
 		std::vector<ProblemStatus>status;
-		Time penalty();//sigma status.penalty()
+		Time penalty()const;//sigma status.penalty()
 		int accepted()const;//sigma status.accepted;
 		void add(Submission s);//status.add
-		friend bool operator<(const Team &a,const Team &b);//accepted|penalty|pass_time...|name
+		friend std::strong_ordering operator<=>(const Team &a,const Team &b);//accepted|penalty|pass_time...|name
 	};
 	template<typename T>
 	using RankedSet=__gnu_pbds::tree<T,__gnu_pbds::null_type,
