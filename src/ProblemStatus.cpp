@@ -72,7 +72,7 @@ namespace reverSilly::ICPC
 	}
 	Time ProblemStatus::penalty()const
 	{
-		if(isAccepted())
+		if(!isAccepted())
 			return {0};
 		return {tries*20+acceptedTime().t};
 	}
