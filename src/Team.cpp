@@ -24,6 +24,8 @@ namespace reverSilly::ICPC
 	}
 	std::strong_ordering operator<=>(Team const &a,Team const &b)
 	{
+		if(&a==&b)
+			return std::strong_ordering::equal;
 		int aca=a.accepted(),acb=b.accepted();
 		if(aca!=acb)
 			return aca<=>acb;
