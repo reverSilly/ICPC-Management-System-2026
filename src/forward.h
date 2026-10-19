@@ -1,17 +1,33 @@
-#include<>
+#include<string>
+#include<vector>
 
-namespace reverSilly
+namespace reverSilly::ICPC
 {
-	namespace ICPC
+	struct Time
 	{
-		struct Submission
-		{
+		int t;
+	};
+	struct Problem
+	{
+		std::string name;
 
-		};
-		struct Group
+	};
+	struct Submission
+	{
+		Problem *problem;
+		enum class Status
 		{
-			std::string name;
-			std::vector<Submission>submissions;
-		}
-	}
+			Accepted,
+			WrongAnswer,
+			RuntimeError,
+			TimeLimitExceed
+		}status;
+		Time time;
+	};
+	struct Group
+	{
+		std::string name;
+		std::vector<Submission>submissions;
+		Time 
+	};
 }
