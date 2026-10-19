@@ -35,7 +35,7 @@ namespace reverSilly::ICPC
 			return std::strong_ordering::equal;
 		int aca=a.accepted(),acb=b.accepted();
 		if(aca!=acb)
-			return aca<=>acb;
+			return acb<=>aca;
 		int pena=a.penalty().t,penb=b.penalty().t;
 		if(pena!=penb)
 			return pena<=>penb;
