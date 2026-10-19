@@ -26,7 +26,7 @@ namespace reverSilly::ICPC
 			RuntimeError,
 			TimeLimitExceed
 		}status;
-		bool isAccepted();
+		bool isAccepted()const;
 		Time time;
 	};
 	struct Problem
