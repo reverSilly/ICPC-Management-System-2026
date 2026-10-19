@@ -76,8 +76,19 @@ namespace reverSilly::ICPC
 									 __gnu_pbds::tree_order_statistics_node_update>;
 	struct TeamRef
 	{
-		Team const*t;
-		friend std::strong_ordering operator<=>(TeamRef a,TeamRef b){return *a.t<=>*b.t;}
+		int accepted,spenalty;
+		std::vector<int>penalty;
+		std::string_view name;
+		TeamRef(Team const &t)
+		{
+			accepted=t.accepted();
+			penalty.reserve(t.status.size());
+			for(auto &i:t.status)
+				penalty.push_back(i.penalty().t);
+			spenalty=std::accumulate(penalty.begin(),penalty.end(),0);
+			name=t.name;
+		}
+		friend std::strong_ordering operator<=>(TeamRef a,TeamRef b)=default;
 	};
 	struct Contest
 	{
@@ -94,6 +105,7 @@ namespace reverSilly::ICPC
 			void addTeam(Team const&);//rank,teams
 			void addProblem(Problem const*);//team.status
 			void refresh(const std::string &team,std::function<void(Team&)>,Set*);//erase iterator,do,insert iterator
+			void rebuild();
 		}teams;
 		std::unordered_map<std::string,Problem> problems;
 		std::optional<Time>duration;
@@ -102,7 +114,8 @@ namespace reverSilly::ICPC
 		void addTeam(Team const&);// wrapper
 		void addProblem(Problem &&p);//problems, after all addTeam
 		void start(Time duration);// duration init.
-		void flush(std::ostream&)const;//teams,status.accepted,team.penalty(),status.str()
+		void print(std::ostream&)const;//teams,status.accepted,team.penalty(),status.str()
+		void flush();
 		void freeze();//forevery team.status not accepted freeze
 		void submit(Submission);//teams.refresh(add)
 		void scroll(std::ostream&);//flush,team.refresh(unfreeze)...,flush

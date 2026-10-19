@@ -7,7 +7,7 @@ namespace reverSilly::ICPC
 {
 	Team const*Contest::TeamInfo::teamByRank(int r)const
 	{
-		return rank.find_by_order(r)->t;
+		return teamByName(std::string(rank.find_by_order(r)->name));
 	}
 	Team const*Contest::TeamInfo::teamByName(std::string const &sv)const
 	{
@@ -18,14 +18,14 @@ namespace reverSilly::ICPC
 	}
 	int Contest::TeamInfo::rankByTeam(Team const *t)const
 	{
-		return rank.order_of_key(TeamRef{t});
+		return rank.order_of_key(TeamRef{*t});
 	}
 	void Contest::TeamInfo::addTeam(Team const &t)
 	{
 		if(teams.contains(t.name))
 			throw std::invalid_argument{"Add failed: duplicated team name."};
 		auto it=teams.insert({t.name,{t,rank.begin()}}).first;
-		auto [jt,_]=rank.insert({&it->second.first});
+		auto [jt,_]=rank.insert({it->second.first});
 		it->second.second=jt;
 		assert(_);
 	}
@@ -37,14 +37,24 @@ namespace reverSilly::ICPC
 	void Contest::TeamInfo::refresh(std::string const &s,std::function<void(Team&)>F,Set*sup)
 	{
 		auto &obj=teams.at(s);
-		rank.erase({&obj.first});
 		if(sup)
-			sup->erase({&obj.first});
+		{
+			rank.erase({obj.first});
+			sup->erase({obj.first});
+		}
 		F(obj.first);
-		auto[it,_]=rank.insert({&obj.first});
-		obj.second=it;
-		assert(_);
 		if(sup)
-			sup->insert({&obj.first});
+		{
+			sup->insert({obj.first});
+			auto[it,_]=rank.insert({obj.first});
+			obj.second=it;
+			assert(_);
+		}
+	}
+	void Contest::TeamInfo::rebuild()
+	{
+		rank.clear();
+		for(auto &[i,j]:teams)
+			j.second=rank.insert(j.first).first;
 	}
 }

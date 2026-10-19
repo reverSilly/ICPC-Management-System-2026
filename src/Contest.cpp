@@ -30,20 +30,26 @@ namespace reverSilly::ICPC
 	{
 		assertNotStarted("Start");
 		this->duration=duration;
+		teams.rebuild();
 	}
-	void Contest::flush(std::ostream &os)const
+	void Contest::print(std::ostream &os)const
 	{
-		assertStarted("Flush");
+		assertStarted("Print");
 		int rank=0;
-		for(auto i:teams.rank)
+		for(auto &i:teams.rank)
 		{
-			auto &t=*i.t;
+			auto &t=*teams.teamByName(std::string(i.name));
 			os<<t.name<<' '<<rank+1<<' '<<t.accepted()<<' '<<t.penalty().t<<' ';
 			for(auto &s:t.status)
 				os<<s.str()<<' ';
 			os<<'\n';
 			++rank;
 		}
+	}
+	void Contest::flush()
+	{
+		assertStarted("Flush");
+		teams.rebuild();
 	}
 	void Contest::freeze()
 	{
@@ -74,16 +80,17 @@ namespace reverSilly::ICPC
 			throw std::logic_error{"Scroll failed: scoreboard has not been frozen."};
 		frozen=false;
 		os<<"[Info]Scroll scoreboard.\n";//this is not so elegant
-		flush(os);
+		flush();
+		print(os);
 		TeamInfo::Set frozenTeam;
 		for(auto&[k,v]:teams.teams)
 		{
 			if(v.first.hasFrozen())
-				frozenTeam.insert({&v.first});
+				frozenTeam.insert({v.first});
 		}
 		while(!frozenTeam.empty())
 		{
-			auto t=frozenTeam.rbegin()->t;
+			auto t=teams.teamByName(std::string(frozenTeam.rbegin()->name));
 			int rk1=teams.rankByTeam(t);
 			teams.refresh(t->name,[](Team &t)
 			{
@@ -98,7 +105,7 @@ namespace reverSilly::ICPC
 			},&frozenTeam);
 			int rk2=teams.rankByTeam(t);
 			if(!t->hasFrozen())
-				frozenTeam.erase({t});
+				frozenTeam.erase({*t});
 			os<<t->name<<' ';
 			if(rk2==rk1)
 				os<<t->name<<' ';
@@ -109,7 +116,7 @@ namespace reverSilly::ICPC
 			else assert(false);
 			os<<t->accepted()<<' '<<t->penalty().t<<'\n';
 		}
-		flush(os);
+		print(os);
 	}
 	Submission *Contest::query(Team *team,Problem *problem,Submission::Status s)const
 	{
