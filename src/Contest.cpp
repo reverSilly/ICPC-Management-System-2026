@@ -2,25 +2,25 @@
 
 namespace reverSilly::ICPC
 {
-	void Contest::assertStarted()const
+	void Contest::assertStarted(std::string const &sv)const
 	{
 		if(!duration.has_value())
-			throw std::logic_error{"Contest not started"};
+			throw std::logic_error{sv+" failed: competition not started"};
 	}
-	void Contest::assertNotStarted()const
+	void Contest::assertNotStarted(std::string const &sv)const
 	{
 		if(duration.has_value())
-			throw std::logic_error{"Contest already started"};
+			throw std::logic_error{sv+" failed: competition has started."};
 	}
 
 	void Contest::addTeam(Team const &t)
 	{
-		assertNotStarted();
+		assertNotStarted("Add");
 		teams.addTeam(t);
 	}
 	void Contest::addProblem(Problem &&p)
 	{
-		assertNotStarted();
+		assertNotStarted("Add Problem");
 		auto [it,_]=problems.insert({p.name,std::move(p)});
 		if(!_)
 			throw std::invalid_argument{"Problem already exist"};
@@ -28,12 +28,12 @@ namespace reverSilly::ICPC
 	}
 	void Contest::start(Time duration)
 	{
-		assertNotStarted();
+		assertNotStarted("Start");
 		this->duration=duration;
 	}
 	void Contest::flush(std::ostream &os)const
 	{
-		assertStarted();
+		assertStarted("Flush");
 		int rank=0;
 		for(auto i:teams.rank)
 		{
@@ -47,9 +47,9 @@ namespace reverSilly::ICPC
 	}
 	void Contest::freeze()
 	{
-		assertStarted();
+		assertStarted("Freeze");
 		if(frozen)
-			throw std::logic_error{"already frozen"};
+			throw std::logic_error{"Freeze failed: scoreboard has been frozen."};
 		for(auto &[k,v]:teams.teams)
 		{
 			auto &[team,it]=v;
@@ -64,15 +64,16 @@ namespace reverSilly::ICPC
 	}
 	void Contest::submit(Submission s)
 	{
-		assertStarted();
+		assertStarted("Submit");
 		teams.refresh(s.owner->name,[s](Team &t){t.add(s);},nullptr);
 	}
 	void Contest::scroll(std::ostream &os)
 	{
-		assertStarted();
+		assertStarted("Scroll");
 		if(!frozen)
-			throw std::logic_error{"not frozen"};
+			throw std::logic_error{"Scroll failed: scoreboard has not been frozen."};
 		frozen=false;
+		os<<"[Info]Scroll scoreboard.\n";//this is not so elegant
 		flush(os);
 		TeamInfo::Set frozenTeam;
 		for(auto&[k,v]:teams.teams)
@@ -112,16 +113,16 @@ namespace reverSilly::ICPC
 	}
 	Submission *Contest::query(Team *team,Problem *problem,Submission::Status s)const
 	{
-		assertStarted();
+		assertStarted("Query");
 		auto ss=static_cast<std::size_t>(s);
 		auto &submits=team->status[problem->id].submissions;
 		if(submits[ss].empty())
-			throw std::out_of_range{"no submission match the requirement"};
+			throw std::out_of_range{"Cannot find any submission."};
 		return &submits[ss].back();
 	}
 	void Contest::end()
 	{
-		assertStarted();
+		assertStarted("End");
 		duration.reset();
 		assert(frozen==false);
 	}

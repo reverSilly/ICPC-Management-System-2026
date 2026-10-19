@@ -14,7 +14,7 @@ namespace reverSilly::ICPC
 		auto it=teams.find(sv);
 		if(it!=teams.end())
 			return &it->second.first;
-		return nullptr;
+		throw std::out_of_range{"cannot find the team"};
 	}
 	int Contest::TeamInfo::rankByTeam(Team const *t)const
 	{
@@ -23,7 +23,7 @@ namespace reverSilly::ICPC
 	void Contest::TeamInfo::addTeam(Team const &t)
 	{
 		if(teams.contains(t.name))
-			throw std::invalid_argument{"Team already exist"};
+			throw std::invalid_argument{"Add failed: duplicated team name."};
 		auto it=teams.insert({t.name,{t,rank.begin()}}).first;
 		auto [jt,_]=rank.insert({&it->second.first});
 		it->second.second=jt;

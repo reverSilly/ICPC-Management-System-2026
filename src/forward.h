@@ -19,8 +19,8 @@ namespace reverSilly::ICPC
 	struct Team;
 	struct Submission
 	{
-		Problem *problem;
-		Team *owner;
+		Problem const *problem;
+		Team const *owner;
 		enum class Status
 		{
 			Accepted=0,
@@ -110,7 +110,7 @@ namespace reverSilly::ICPC
 		//team.status
 		void end();//clear duration
 
-		void assertStarted()const;
-		void assertNotStarted()const;
+		void assertStarted(std::string const&)const;
+		void assertNotStarted(std::string const&)const;
 	};
 }
