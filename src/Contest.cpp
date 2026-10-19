@@ -106,15 +106,16 @@ namespace reverSilly::ICPC
 			int rk2=teams.rankByTeam(t);
 			if(!t->hasFrozen())
 				frozenTeam.erase({*t});
-			os<<t->name<<' ';
-			if(rk2==rk1)
+			if(rk2!=rk1)
+			{
 				os<<t->name<<' ';
-			else if(rk1<rk2)
-				os<<teams.teamByRank(rk2-1)->name<<' ';
-			else if(rk2<rk1)
-				os<<teams.teamByRank(rk2+1)->name<<' ';
-			else assert(false);
-			os<<t->accepted()<<' '<<t->penalty().t<<'\n';
+				if(rk1<rk2)
+					os<<teams.teamByRank(rk2-1)->name<<' ';
+				else if(rk2<rk1)
+					os<<teams.teamByRank(rk2+1)->name<<' ';
+				else assert(false);
+				os<<t->accepted()<<' '<<t->penalty().t<<'\n';
+			}
 		}
 		print(os);
 	}

@@ -7,6 +7,7 @@
 #include<iostream>
 #include<compare>
 #include<utility>
+#include<numeric>
 #include<ext/pb_ds/assoc_container.hpp>
 #include<ext/pb_ds/tree_policy.hpp>
 
@@ -40,8 +41,8 @@ namespace reverSilly::ICPC
 	struct ProblemStatus//status for problem of every group
 	{
 		Problem const*const problem;
-		bool accepted;
-		int tries;
+		bool accepted=false;
+		int tries=0;
 		std::vector<Submission>submissions[4];//assert count(Submission status)=4
 		
 		ProblemStatus(Problem const*p):problem{p}{}
@@ -65,6 +66,7 @@ namespace reverSilly::ICPC
 	{
 		std::string const name;
 		std::vector<ProblemStatus>status;
+
 		Time penalty()const;//sigma status.penalty()
 		int accepted()const;//sigma status.accepted;
 		void add(Submission s);//status.add
@@ -73,16 +75,17 @@ namespace reverSilly::ICPC
 	};
 	template<typename T>
 	using RankedSet=__gnu_pbds::tree<T,__gnu_pbds::null_type,
-									 std::less<int>,__gnu_pbds::rb_tree_tag,
+									 std::less<T>,__gnu_pbds::rb_tree_tag,
 									 __gnu_pbds::tree_order_statistics_node_update>;
 	struct TeamRef
 	{
 		int accepted,spenalty;
 		std::vector<int>penalty;
 		std::string_view name;
+
 		TeamRef(Team const &t)
 		{
-			accepted=t.accepted();
+			accepted=-t.accepted();
 			penalty.reserve(t.status.size());
 			for(auto &i:t.status)
 				penalty.push_back(i.penalty().t);
@@ -110,7 +113,7 @@ namespace reverSilly::ICPC
 		}teams;
 		std::unordered_map<std::string,Problem> problems;
 		std::optional<Time>duration;
-		bool frozen;
+		bool frozen=false;
 
 		void addTeam(Team const&);// wrapper
 		void addProblem(Problem &&p);//problems, after all addTeam

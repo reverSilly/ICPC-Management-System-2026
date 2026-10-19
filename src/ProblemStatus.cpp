@@ -8,7 +8,7 @@ namespace reverSilly::ICPC
 	std::string ProblemStatus::str()const
 	{
 		using std::format;
-		if(frozen.value_or({0,0}).triesAfter!=0)
+		if(frozen.value_or(FrozenInfo{0,0}).triesAfter!=0)
 		{
 			auto[bef,aft]=*frozen;
 			if(bef==0)
