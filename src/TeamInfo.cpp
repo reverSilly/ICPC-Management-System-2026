@@ -35,20 +35,19 @@ namespace reverSilly::ICPC
 			throw std::invalid_argument{"team not exist"};
 		auto &obj=it->second;
 		dirty.insert(&it->second);
+		rank.erase(it->second.second);
 		F(obj.first);
 	}
 	void Contest::TeamInfo::rerank()
 	{
 		int r=0;
 		for(auto &i:rank)
-			teams.find(std::string{i.name})->second.rank=r++;
+			teams.find(std::string{i.t->name})->second.rank=r++;
 	}
 	void Contest::TeamInfo::rebuild()
 	{
 		for(auto i:dirty)
-			rank.erase(i->second);
-		for(auto i:dirty)
-			i->second=rank.insert(i->first).first;
+			i->second=rank.insert({&i->first}).first;
 		dirty.clear();
 		rerank();
 	}

@@ -80,22 +80,8 @@ namespace reverSilly::ICPC
 	using RankedSet=std::set<T>;
 	struct TeamRef
 	{
-		int accepted,spenalty;
-		std::vector<int>AcceptedTime;
-		std::string_view name;
-
-		TeamRef(Team const &t):accepted{-t.accepted()},spenalty{},name{t.name}
-		{
-			AcceptedTime.reserve(-accepted);
-			for(auto &i:t.status)
-			{
-				if(i.isAccepted())
-					AcceptedTime.push_back(i.acceptedTime().t);
-				spenalty+=i.penalty().t;
-			}
-			std::sort(AcceptedTime.rbegin(),AcceptedTime.rend());
-		}
-		friend std::strong_ordering operator<=>(TeamRef const &a,TeamRef const &b)=default;
+		Team *t;
+		friend std::strong_ordering operator<=>(TeamRef a,TeamRef b){return *a.t<=>*b.t;};
 	};
 	struct Contest
 	{

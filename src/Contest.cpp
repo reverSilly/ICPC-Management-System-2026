@@ -32,7 +32,7 @@ namespace reverSilly::ICPC
 		assertNotStarted("Start");
 		this->duration=duration;
 		for(auto &[k,v]:teams.teams)
-			v.second=teams.rank.insert(v.first).first;
+			v.second=teams.rank.insert({&v.first}).first;
 		teams.rerank();
 		flush();
 	}
@@ -42,7 +42,7 @@ namespace reverSilly::ICPC
 		int rank=0;
 		for(auto &i:teams.rank)
 		{
-			auto &t=teams.teamByName(std::string(i.name))->second.first;
+			auto &t=teams.teamByName(i.t->name)->second.first;
 			os<<t.name<<' '<<rank+1<<' '<<t.accepted()<<' '<<t.penalty().t<<' ';
 			for(auto &s:t.status)
 			{
@@ -93,11 +93,11 @@ namespace reverSilly::ICPC
 		for(auto&[k,v]:teams.teams)
 		{
 			if(v.first.hasFrozen())
-				frozenTeam.insert({v.first});
+				frozenTeam.insert({&v.first});
 		}
 		while(!frozenTeam.empty())
 		{
-			auto it=teams.teams.find(std::string(frozenTeam.rbegin()->name));
+			auto it=teams.teams.find(frozenTeam.rbegin()->t->name);
 			auto t=&it->second.first;
 			std::optional<TeamRef>pv,nx;
 			if(it->second.second!=teams.rank.begin())
@@ -114,14 +114,14 @@ namespace reverSilly::ICPC
 					break;
 				}
 			}
-			TeamRef cur=*t;
+			TeamRef cur{t};
 			it->second.second=teams.rank.insert(cur).first;
 			if(t->hasFrozen())
-				frozenTeam.insert({*t});
+				frozenTeam.insert({t});
 			if(nx&&nx<cur)
-				os<<t->name<<' '<<prev(it->second.second)->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
+				os<<t->name<<' '<<prev(it->second.second)->t->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
 			else if(pv&&cur<pv)
-				os<<t->name<<' '<<next(it->second.second)->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
+				os<<t->name<<' '<<next(it->second.second)->t->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
 		}
 		flush();
 		print(os);
