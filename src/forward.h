@@ -86,13 +86,14 @@ namespace reverSilly::ICPC
 
 		TeamRef(Team const &t):accepted{-t.accepted()},spenalty{},name{t.name}
 		{
-			AcceptedTime.reserve(t.status.size());
+			AcceptedTime.reserve(-accepted);
 			for(auto &i:t.status)
 			{
 				if(i.isAccepted())
 					AcceptedTime.push_back(i.acceptedTime().t);
 				spenalty+=i.penalty().t;
 			}
+			std::sort(AcceptedTime.rbegin(),AcceptedTime.rend());
 		}
 		friend std::strong_ordering operator<=>(TeamRef a,TeamRef b)=default;
 	};
@@ -102,7 +103,9 @@ namespace reverSilly::ICPC
 		{
 			using Set=RankedSet<TeamRef>;
 			Set rank;
-			std::unordered_map<std::string,std::pair<Team,Set::iterator>>teams;
+			using Array=std::unordered_map<std::string,std::pair<Team,Set::iterator>>;
+			Array teams;
+			std::vector<Array::iterator>dirty;
 
 			Team const*teamByRank(int rank)const;//teams.rank();
 			Team const*teamByName(std::string const&)const;//Teams

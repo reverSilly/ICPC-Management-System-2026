@@ -39,16 +39,18 @@ namespace reverSilly::ICPC
 		int pena=a.penalty().t,penb=b.penalty().t;
 		if(pena!=penb)
 			return pena<=>penb;
-		std::vector<int>pensa,pensb;
-		pensa.reserve(a.status.size());
-		pensb.reserve(b.status.size());
+		std::vector<int>acta,actb;
+		acta.reserve(aca);
+		actb.reserve(acb);
 		for(auto &s:a.status)
-			pensa.push_back(s.penalty().t);
+			if(s.isAccepted())
+				acta.push_back(s.acceptedTime().t);
 		for(auto &s:b.status)
-			pensb.push_back(s.penalty().t);
-		std::sort(pensa.rbegin(),pensa.rend());
-		std::sort(pensb.rbegin(),pensb.rend());
-		auto res=(pensa<=>pensb);
+			if(s.isAccepted())
+				actb.push_back(s.acceptedTime().t);
+		std::sort(acta.rbegin(),acta.rend());
+		std::sort(actb.rbegin(),actb.rend());
+		auto res=(acta<=>actb);
 		if(res!=std::strong_ordering::equal)
 			return res;
 		return a.name<=>b.name;

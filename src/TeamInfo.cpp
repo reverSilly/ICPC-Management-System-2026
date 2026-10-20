@@ -39,12 +39,17 @@ namespace reverSilly::ICPC
 	}
 	void Contest::TeamInfo::refresh(std::string const &s,std::function<void(Team&)>F,Set*sup)
 	{
-		auto &obj=teams.at(s);
+		auto it=teams.find(s);
+		if(it==teams.end())
+			throw std::invalid_argument{"team not exist"};
+		auto &obj=it->second;
 		if(sup)
 		{
 			rank.erase({obj.first});
 			sup->erase({obj.first});
 		}
+		else
+			dirty.push_back(it);
 		F(obj.first);
 		if(sup)
 		{
@@ -56,8 +61,10 @@ namespace reverSilly::ICPC
 	}
 	void Contest::TeamInfo::rebuild()
 	{
-		rank.clear();
-		for(auto &[i,j]:teams)
-			j.second=rank.insert(j.first).first;
+		for(auto i:dirty)
+			rank.erase(i->second.second);
+		for(auto i:dirty)
+			i->second.second=rank.insert(i->second.first).first;
+		dirty.clear();
 	}
 }
