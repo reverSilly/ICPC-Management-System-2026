@@ -104,7 +104,12 @@ namespace reverSilly::ICPC
 		{
 			using Set=RankedSet<TeamRef>;
 			Set rank;
-			using Payload=std::pair<Team,Set::iterator>;
+			struct Payload
+			{
+				Team first;
+				Set::iterator second;
+				int rank;
+			};
 			using Array=__gnu_pbds::gp_hash_table<std::string,Payload>;
 			Array teams;
 			__gnu_pbds::gp_hash_table<Payload*,__gnu_pbds::null_type>dirty;
@@ -116,6 +121,7 @@ namespace reverSilly::ICPC
 			void addTeam(Team const&);//rank,teams
 			void addProblem(Problem const*);//team.status
 			void refresh(const std::string &team,std::function<void(Team&)>);//erase iterator,do,insert iterator
+			void rerank();
 			void rebuild();
 		}teams;
 		std::unordered_map<std::string,Problem> problems;

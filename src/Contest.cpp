@@ -32,6 +32,7 @@ namespace reverSilly::ICPC
 		this->duration=duration;
 		for(auto &[k,v]:teams.teams)
 			v.second=teams.rank.insert(v.first).first;
+		teams.rerank();
 		flush();
 	}
 	void Contest::print(std::ostream &os)const
@@ -63,7 +64,7 @@ namespace reverSilly::ICPC
 			throw std::logic_error{"Freeze failed: scoreboard has been frozen."};
 		for(auto &[k,v]:teams.teams)
 		{
-			auto &[team,it]=v;
+			auto &[team,it,_]=v;
 			for(auto &p:team.status)
 			{
 				assert(!p.isFrozen());
@@ -121,6 +122,7 @@ namespace reverSilly::ICPC
 			else if(pv&&cur<pv)
 				os<<t->name<<' '<<next(it->second.second)->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
 		}
+		flush();
 		print(os);
 	}
 	Submission *Contest::query(Team *team,Problem *problem,Submission::Status s)const
