@@ -71,7 +71,7 @@ namespace reverSilly::ICPC
 	void Contest::submit(Submission s)
 	{
 		assertStarted("Submit");
-		teams.refresh(s.owner->name,[s](Team &t){t.add(s);},nullptr);
+		teams.refresh(s.owner->name,[s](Team &t){t.add(s);});
 	}
 	void Contest::scroll(std::ostream &os)
 	{
@@ -92,20 +92,21 @@ namespace reverSilly::ICPC
 		{
 			auto t=teams.teamByName(std::string(frozenTeam.rbegin()->name));
 			int rk1=teams.rankByTeam(t);
-			teams.refresh(t->name,[](Team &t)
+			frozenTeam.erase(frozenTeam.rbegin());
+			teams.rank.erase({*t});
+			for(auto &p:t->status)
 			{
-				for(auto &p:t.status)
+				if(p.isFrozen())
 				{
-					if(p.isFrozen())
-					{
-						p.unfreeze();
-						return;
-					}
+					p.unfreeze();
+					return;
 				}
-			},&frozenTeam);
+			}
+			TeamRef cur=*t;
+			teams.rank.insert(cur);
+			if(t->hasFrozen())
+				frozenTeam.insert({*t});
 			int rk2=teams.rankByTeam(t);
-			if(!t->hasFrozen())
-				frozenTeam.erase({*t});
 			if(rk2!=rk1)
 			{
 				os<<t->name<<' ';

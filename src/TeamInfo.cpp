@@ -9,12 +9,13 @@ namespace reverSilly::ICPC
 	{
 		return teamByName(std::string(rank.find_by_order(r)->name));
 	}
+	Team *Contest::TeamInfo::teamByName(std::string const &sv)
+	{
+		return &teams.at(sv).first;
+	}
 	Team const*Contest::TeamInfo::teamByName(std::string const &sv)const
 	{
-		auto it=teams.find(sv);
-		if(it!=teams.end())
-			return &it->second.first;
-		throw std::out_of_range{"cannot find the team"};
+		return &teams.at(sv).first;
 	}
 	int Contest::TeamInfo::rankByTeam(Team const *t)const
 	{
@@ -37,27 +38,14 @@ namespace reverSilly::ICPC
 		for(auto &[k,v]:teams)
 			v.first.status.emplace_back(p);
 	}
-	void Contest::TeamInfo::refresh(std::string const &s,std::function<void(Team&)>F,Set*sup)
+	void Contest::TeamInfo::refresh(std::string const &s,std::function<void(Team&)>F)
 	{
 		auto it=teams.find(s);
 		if(it==teams.end())
 			throw std::invalid_argument{"team not exist"};
 		auto &obj=it->second;
-		if(sup)
-		{
-			rank.erase({obj.first});
-			sup->erase({obj.first});
-		}
-		else
-			dirty.insert(&it->second);
+		dirty.insert(&it->second);
 		F(obj.first);
-		if(sup)
-		{
-			sup->insert({obj.first});
-			auto[it,_]=rank.insert({obj.first});
-			obj.second=it;
-			assert(_);
-		}
 	}
 	void Contest::TeamInfo::rebuild()
 	{

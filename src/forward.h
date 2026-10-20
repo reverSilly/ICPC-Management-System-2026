@@ -96,7 +96,7 @@ namespace reverSilly::ICPC
 			}
 			std::sort(AcceptedTime.rbegin(),AcceptedTime.rend());
 		}
-		friend std::strong_ordering operator<=>(TeamRef a,TeamRef b)=default;
+		friend std::strong_ordering operator<=>(TeamRef const &a,TeamRef const &b)=default;
 	};
 	struct Contest
 	{
@@ -109,12 +109,13 @@ namespace reverSilly::ICPC
 			std::unordered_set<Payload*>dirty;
 
 			Team const*teamByRank(int rank)const;//teams.rank();
-			Team const*teamByName(std::string const&)const;//Teams
+			Team *teamByName(std::string const&);//Teams
+			Team const*teamByName(std::string const&)const;
 			int rankByTeam(Team const*)const;
 
 			void addTeam(Team const&);//rank,teams
 			void addProblem(Problem const*);//team.status
-			void refresh(const std::string &team,std::function<void(Team&)>,Set*);//erase iterator,do,insert iterator
+			void refresh(const std::string &team,std::function<void(Team&)>);//erase iterator,do,insert iterator
 			void rebuild();
 		}teams;
 		std::unordered_map<std::string,Problem> problems;
