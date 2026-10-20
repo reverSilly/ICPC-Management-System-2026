@@ -49,7 +49,7 @@ namespace reverSilly::ICPC
 			sup->erase({obj.first});
 		}
 		else
-			dirty.push_back(it);
+			dirty.insert(&it->second);
 		F(obj.first);
 		if(sup)
 		{
@@ -62,9 +62,9 @@ namespace reverSilly::ICPC
 	void Contest::TeamInfo::rebuild()
 	{
 		for(auto i:dirty)
-			rank.erase(i->second.second);
+			rank.erase(i->second);
 		for(auto i:dirty)
-			i->second.second=rank.insert(i->second.first).first;
+			i->second=rank.insert(i->first).first;
 		dirty.clear();
 	}
 }

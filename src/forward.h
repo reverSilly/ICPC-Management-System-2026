@@ -3,6 +3,7 @@
 #include<string_view>
 #include<vector>
 #include<unordered_map>
+#include<unordered_set>
 #include<optional>
 #include<iostream>
 #include<compare>
@@ -103,9 +104,9 @@ namespace reverSilly::ICPC
 		{
 			using Set=RankedSet<TeamRef>;
 			Set rank;
-			using Array=std::unordered_map<std::string,std::pair<Team,Set::iterator>>;
-			Array teams;
-			std::vector<Array::iterator>dirty;
+			using Payload=std::pair<Team,Set::iterator>;
+			std::unordered_map<std::string,Payload> teams;
+			std::unordered_set<Payload*>dirty;
 
 			Team const*teamByRank(int rank)const;//teams.rank();
 			Team const*teamByName(std::string const&)const;//Teams
