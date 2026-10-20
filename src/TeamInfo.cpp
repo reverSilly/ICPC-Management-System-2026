@@ -5,15 +5,15 @@
 
 namespace reverSilly::ICPC
 {
-	Contest::TeamInfo::Array::point_iterator Contest::TeamInfo::teamByName(std::string const &sv)
+	Contest::TeamInfo::Array::iterator Contest::TeamInfo::teamByName(std::string const &sv)
 	{
 		return teams.find(sv);
 	}
-	Contest::TeamInfo::Array::point_const_iterator Contest::TeamInfo::teamByName(std::string const &sv)const
+	Contest::TeamInfo::Array::const_iterator Contest::TeamInfo::teamByName(std::string const &sv)const
 	{
 		return teams.find(sv);
 	}
-	int Contest::TeamInfo::rankByTeam(Array::point_const_iterator it)const
+	int Contest::TeamInfo::rankByTeam(Array::const_iterator it)const
 	{
 		return it->second.rank;
 	}

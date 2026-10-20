@@ -2,6 +2,7 @@
 #include"Log.hpp"
 
 #include<bits/stdc++.h>
+#include<cassert>
 
 using namespace reverSilly::ICPC;
 using namespace std;

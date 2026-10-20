@@ -1,4 +1,5 @@
 #include"forward.h"
+#include<cassert>
 
 namespace reverSilly::ICPC
 {
@@ -103,7 +104,7 @@ namespace reverSilly::ICPC
 				pv=*prev(it->second.second);
 			if(next(it->second.second)!=teams.rank.end())
 				nx=*next(it->second.second);
-			frozenTeam.erase(frozenTeam.rbegin());
+			frozenTeam.erase(prev(frozenTeam.end()));
 			teams.rank.erase(it->second.second);
 			for(auto &p:t->status)
 			{

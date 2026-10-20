@@ -4,13 +4,14 @@
 #include<vector>
 #include<unordered_map>
 #include<unordered_set>
+#include<set>
+#include<functional>
 #include<optional>
 #include<iostream>
 #include<compare>
 #include<utility>
 #include<numeric>
-#include<ext/pb_ds/assoc_container.hpp>
-#include<ext/pb_ds/tree_policy.hpp>
+#include<algorithm>
 
 namespace reverSilly::ICPC
 {
@@ -76,9 +77,7 @@ namespace reverSilly::ICPC
 		friend std::strong_ordering operator<=>(const Team &a,const Team &b);//accepted|penalty|pass_time...|name
 	};
 	template<typename T>
-	using RankedSet=__gnu_pbds::tree<T,__gnu_pbds::null_type,
-									 std::less<T>,__gnu_pbds::rb_tree_tag,
-									 __gnu_pbds::tree_order_statistics_node_update>;
+	using RankedSet=std::set<T>;
 	struct TeamRef
 	{
 		int accepted,spenalty;
@@ -110,13 +109,13 @@ namespace reverSilly::ICPC
 				Set::iterator second;
 				int rank;
 			};
-			using Array=__gnu_pbds::gp_hash_table<std::string,Payload>;
+			using Array=std::unordered_map<std::string,Payload>;
 			Array teams;
-			__gnu_pbds::gp_hash_table<Payload*,__gnu_pbds::null_type>dirty;
+			std::unordered_set<Payload*>dirty;
 
-			Array::point_iterator teamByName(std::string const&);//Teams
-			Array::point_const_iterator teamByName(std::string const&)const;
-			int rankByTeam(Array::point_const_iterator)const;
+			Array::iterator teamByName(std::string const&);//Teams
+			Array::const_iterator teamByName(std::string const&)const;
+			int rankByTeam(Array::const_iterator)const;
 
 			void addTeam(Team const&);//rank,teams
 			void addProblem(Problem const*);//team.status
