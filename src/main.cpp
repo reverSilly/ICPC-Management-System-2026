@@ -84,7 +84,7 @@ int main()
 			Submission s
 			{
 				.problem=&c.problems.find(problem)->second,
-				.owner=c.teams.teamByName(team),
+				.owner=&c.teams.teamByName(team)->second.first,
 				.status=fromStr(status),
 				.time={time},
 				.id=cnt++
@@ -114,7 +114,7 @@ int main()
 				info("Complete query ranking.");
 				if(c.frozen)
 					warn("Scoreboard is frozen. The ranking may be inaccurate until it were scrolled.");
-				cout<<format("{} NOW AT RANKING {}\n",t->name,c.teams.rankByTeam(t)+1);
+				cout<<format("{} NOW AT RANKING {}\n",t->second.first.name,c.teams.rankByTeam(t)+1);
 			}
 			catch(const std::out_of_range& e)
 			{
@@ -137,7 +137,7 @@ int main()
 				smask=1<<static_cast<int>(fromStr(status));
 			try
 			{
-				auto t=c.teams.teamByName(team);
+				auto &t=c.teams.teamByName(team)->second.first;
 				info("Complete query submission.");//team exist=complete query?
 				vector<Submission>candidate;
 				for(unsigned int a=pmask;a;a-=lowbit(a))
@@ -146,7 +146,7 @@ int main()
 					for(unsigned int b=smask;b;b-=lowbit(b))
 					{
 						int j=countr_zero(b);
-						auto &subs=t->status.at(i).submissions[j];
+						auto &subs=t.status.at(i).submissions[j];
 						if(!subs.empty())
 							candidate.push_back(subs.back());
 					}
@@ -158,7 +158,7 @@ int main()
 					auto mx=
 						max_element(candidate.rbegin(),candidate.rend(),
 						[](Submission a,Submission b){return a.id<b.id;});
-					cout<<t->name<<' '<<mx->problem->name<<' '<<toStr(mx->status)<<' '<<mx->time.t<<'\n';
+					cout<<t.name<<' '<<mx->problem->name<<' '<<toStr(mx->status)<<' '<<mx->time.t<<'\n';
 				}
 			}
 			catch(std::out_of_range const&)

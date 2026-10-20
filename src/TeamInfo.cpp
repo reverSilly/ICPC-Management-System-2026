@@ -5,28 +5,25 @@
 
 namespace reverSilly::ICPC
 {
-	Team const*Contest::TeamInfo::teamByRank(int r)const
+	TeamRef const& Contest::TeamInfo::teamByRank(int r)const
 	{
-		return teamByName(std::string(rank.find_by_order(r)->name));
+		return *rank.find_by_order(r);
 	}
-	Team *Contest::TeamInfo::teamByName(std::string const &sv)
+	Contest::TeamInfo::Array::point_iterator Contest::TeamInfo::teamByName(std::string const &sv)
 	{
-		return &teams.at(sv).first;
+		return teams.find(sv);
 	}
-	Team const*Contest::TeamInfo::teamByName(std::string const &sv)const
+	Contest::TeamInfo::Array::point_const_iterator Contest::TeamInfo::teamByName(std::string const &sv)const
 	{
-		return &teams.at(sv).first;
+		return teams.find(sv);
 	}
-	int Contest::TeamInfo::rankByTeam(Team const *t)const
+	int Contest::TeamInfo::rankByTeam(Array::point_const_iterator it)const
 	{
-		auto it=teams.find(t->name);
-		if(it!=teams.end())
-			return rank.order_of_key(*it->second.second);
-		throw std::out_of_range{"cannot find the team"};
+		return rank.order_of_key(*it->second.second);
 	}
 	void Contest::TeamInfo::addTeam(Team const &t)
 	{
-		if(teams.contains(t.name))
+		if(teams.find(t.name)!=teams.end())
 			throw std::invalid_argument{"Add failed: duplicated team name."};
 		auto it=teams.insert({t.name,{t,rank.begin()}}).first;
 		auto [jt,_]=rank.insert({it->second.first});
