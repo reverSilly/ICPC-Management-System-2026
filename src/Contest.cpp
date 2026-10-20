@@ -90,20 +90,21 @@ namespace reverSilly::ICPC
 		}
 		while(!frozenTeam.empty())
 		{
-			auto t=teams.teamByName(std::string(frozenTeam.rbegin()->name));
+			auto it=teams.teams.find(std::string(frozenTeam.rbegin()->name));
+			auto t=&it->second.first;
 			int rk1=teams.rankByTeam(t);
 			frozenTeam.erase(frozenTeam.rbegin());
-			teams.rank.erase({*t});
+			teams.rank.erase(it->second.second);
 			for(auto &p:t->status)
 			{
 				if(p.isFrozen())
 				{
 					p.unfreeze();
-					return;
+					break;
 				}
 			}
 			TeamRef cur=*t;
-			teams.rank.insert(cur);
+			it->second.second=teams.rank.insert(cur).first;
 			if(t->hasFrozen())
 				frozenTeam.insert({*t});
 			int rk2=teams.rankByTeam(t);
