@@ -91,7 +91,7 @@ namespace reverSilly::ICPC
 			{
 				if(i.isAccepted())
 					AcceptedTime.push_back(i.acceptedTime().t);
-				spenalty+=i.penalty();
+				spenalty+=i.penalty().t;
 			}
 		}
 		friend std::strong_ordering operator<=>(TeamRef a,TeamRef b)=default;

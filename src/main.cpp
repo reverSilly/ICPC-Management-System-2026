@@ -64,7 +64,7 @@ int main()
 		if(op=="ADDTEAM")//why not ADD_TEAM
 		{
 			cin>>team;
-			c.addTeam(Team{.name=team});
+			c.addTeam(Team{.name=team,.status={}});
 			info("Add successfully.");
 		}
 		if(op=="START")
@@ -111,9 +111,9 @@ int main()
 			try
 			{
 				auto t=c.teams.teamByName(team);
-				info("[Info]Complete query ranking.");
+				info("Complete query ranking.");
 				if(c.frozen)
-					warn("[Warning]Scoreboard is frozen. The ranking may be inaccurate until it were scrolled.");
+					warn("Scoreboard is frozen. The ranking may be inaccurate until it were scrolled.");
 				cout<<format("{} NOW AT RANKING {}\n",t->name,c.teams.rankByTeam(t)+1);
 			}
 			catch(const std::out_of_range& e)
@@ -152,7 +152,7 @@ int main()
 					}
 				}
 				if(candidate.empty())
-					cout<<"Cannot find any submission.";
+					cout<<"Cannot find any submission.\n";
 				else
 				{
 					auto mx=
@@ -161,7 +161,7 @@ int main()
 					cout<<t->name<<' '<<mx->problem->name<<' '<<toStr(mx->status)<<' '<<mx->time.t<<'\n';
 				}
 			}
-			catch(std::out_of_range)
+			catch(std::out_of_range const&)
 			{
 				error("Query submission failed: cannot find the team.");
 			}
