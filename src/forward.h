@@ -12,6 +12,7 @@
 #include<utility>
 #include<numeric>
 #include<algorithm>
+#include<optional>
 
 namespace reverSilly::ICPC
 {
@@ -92,7 +93,7 @@ namespace reverSilly::ICPC
 			struct Payload
 			{
 				Team first;
-				Set::iterator second;
+				std::optional<Set::iterator> second;
 				int rank;
 			};
 			using Array=std::unordered_map<std::string,Payload>;

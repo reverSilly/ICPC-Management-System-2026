@@ -35,7 +35,11 @@ namespace reverSilly::ICPC
 			throw std::invalid_argument{"team not exist"};
 		auto &obj=it->second;
 		dirty.insert(&it->second);
-		rank.erase(it->second.second);
+		if(it->second.second.has_value()&&it->second.second!=rank.end())
+		{
+			rank.erase(*it->second.second);
+			it->second.second.reset();
+		}
 		F(obj.first);
 	}
 	void Contest::TeamInfo::rerank()

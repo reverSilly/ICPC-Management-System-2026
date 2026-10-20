@@ -101,11 +101,11 @@ namespace reverSilly::ICPC
 			auto t=&it->second.first;
 			std::optional<TeamRef>pv,nx;
 			if(it->second.second!=teams.rank.begin())
-				pv=*prev(it->second.second);
-			if(next(it->second.second)!=teams.rank.end())
-				nx=*next(it->second.second);
+				pv=*prev(*it->second.second);
+			if(next(*it->second.second)!=teams.rank.end())
+				nx=*next(*it->second.second);
 			frozenTeam.erase(prev(frozenTeam.end()));
-			teams.rank.erase(it->second.second);
+			teams.rank.erase(*it->second.second);
 			for(auto &p:t->status)
 			{
 				if(p.isFrozen())
@@ -119,9 +119,9 @@ namespace reverSilly::ICPC
 			if(t->hasFrozen())
 				frozenTeam.insert({t});
 			if(nx&&nx<cur)
-				os<<t->name<<' '<<prev(it->second.second)->t->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
+				os<<t->name<<' '<<prev(*it->second.second)->t->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
 			else if(pv&&cur<pv)
-				os<<t->name<<' '<<next(it->second.second)->t->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
+				os<<t->name<<' '<<next(*it->second.second)->t->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
 		}
 		flush();
 		print(os);
