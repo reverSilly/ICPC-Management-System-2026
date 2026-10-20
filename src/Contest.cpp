@@ -43,7 +43,10 @@ namespace reverSilly::ICPC
 			auto &t=teams.teamByName(std::string(i.name))->second.first;
 			os<<t.name<<' '<<rank+1<<' '<<t.accepted()<<' '<<t.penalty().t<<' ';
 			for(auto &s:t.status)
-				os<<s.str()<<' ';
+			{
+				s.print(os);
+				os<<' ';
+			}
 			os<<'\n';
 			++rank;
 		}

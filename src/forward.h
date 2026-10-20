@@ -55,7 +55,7 @@ namespace reverSilly::ICPC
 		};
 		std::optional<FrozenInfo>frozen;//tries after frozen
 		
-		std::string str()const;//check: frozen and triesAfter neq 0->frozen, else regular.
+		void print(std::ostream&)const;//check: frozen and triesAfter neq 0->frozen, else regular.
 		void freeze();//set frozen
 		void unfreeze();//reset frozen
 		bool isFrozen()const;

@@ -5,27 +5,29 @@
 
 namespace reverSilly::ICPC
 {
-	std::string ProblemStatus::str()const
+	void ProblemStatus::print(std::ostream &os)const
 	{
 		using std::format;
 		if(frozen.value_or(FrozenInfo{0,0}).triesAfter!=0)
 		{
 			auto[bef,aft]=*frozen;
 			if(bef==0)
-				return format("0/{}",aft);
-			return format("-{}/{}",bef,aft);
+				os<<"0/"<<aft;
+			else
+				os<<'-'<<bef<<'/'<<aft;
 		}
-		if(isAccepted())
+		else if(isAccepted())
 		{
+			os<<'+';
 			if(tries)
-				return format("+{}",tries);
-			return "+";
+				os<<tries;
 		}
 		else
 		{
 			if(tries)
-				return format("-{}",tries);
-			return ".";
+				os<<'-'<<tries;
+			else
+				os<<'.';
 		}
 	}
 	void ProblemStatus::freeze()
