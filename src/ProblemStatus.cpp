@@ -53,12 +53,10 @@ namespace reverSilly::ICPC
 			if(s.isAccepted())
 				accepted=true;
 			else
-			{
 				tries++;
-				if(isFrozen())
-					++frozen.value().triesAfter;
-			}
 		}
+		if(isFrozen())
+			++frozen.value().triesAfter;
 		submissions[static_cast<size_t>(s.status)].push_back(s);
 	}
 	bool ProblemStatus::isAccepted()const
