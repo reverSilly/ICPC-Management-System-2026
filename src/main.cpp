@@ -84,7 +84,7 @@ int main()
 			Submission s
 			{
 				.problem=&c.problems.find(problem)->second,
-				.owner=&c.teams.teamByName(team)->second.first,
+				.owner=&c.teams.teamByName(team)->second.first, //promised legal
 				.status=fromStr(status),
 				.time={time},
 				.id=cnt++
@@ -108,17 +108,14 @@ int main()
 		if(op=="QUERY_RANKING")
 		{
 			cin>>team;
-			try
+			if(auto t=c.teams.teamByName(team);t==c.teams.teams.end())
+				error("Query ranking failed: cannot find the team.");
+			else
 			{
-				auto t=c.teams.teamByName(team);
 				info("Complete query ranking.");
 				if(c.frozen)
 					warn("Scoreboard is frozen. The ranking may be inaccurate until it were scrolled.");
 				cout<<format("{} NOW AT RANKING {}\n",t->second.first.name,c.teams.rankByTeam(t)+1);
-			}
-			catch(const std::out_of_range& e)
-			{
-				error("Query ranking failed: cannot find the team.");
 			}
 		}
 		if(op=="QUERY_SUBMISSION")
@@ -135,9 +132,11 @@ int main()
 				smask=0b1111;
 			else
 				smask=1<<static_cast<int>(fromStr(status));
-			try
+			if(auto it=c.teams.teamByName(team);it==c.teams.teams.end())
+				error("Query submission failed: cannot find the team.");
+			else
 			{
-				auto &t=c.teams.teamByName(team)->second.first;
+				auto &t=it->second.first;
 				info("Complete query submission.");//team exist=complete query?
 				vector<Submission>candidate;
 				for(unsigned int a=pmask;a;a-=lowbit(a))
@@ -160,10 +159,6 @@ int main()
 						[](Submission a,Submission b){return a.id<b.id;});
 					cout<<t.name<<' '<<mx->problem->name<<' '<<toStr(mx->status)<<' '<<mx->time.t<<'\n';
 				}
-			}
-			catch(std::out_of_range const&)
-			{
-				error("Query submission failed: cannot find the team.");
 			}
 		}
 		if(op=="END")
