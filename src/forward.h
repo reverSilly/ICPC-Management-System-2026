@@ -109,7 +109,6 @@ namespace reverSilly::ICPC
 			Array teams;
 			__gnu_pbds::gp_hash_table<Payload*,__gnu_pbds::null_type>dirty;
 
-			TeamRef const &teamByRank(int rank)const;//teams.rank();
 			Array::point_iterator teamByName(std::string const&);//Teams
 			Array::point_const_iterator teamByName(std::string const&)const;
 			int rankByTeam(Array::point_const_iterator)const;

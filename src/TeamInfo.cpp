@@ -5,10 +5,6 @@
 
 namespace reverSilly::ICPC
 {
-	TeamRef const& Contest::TeamInfo::teamByRank(int r)const
-	{
-		return *rank.find_by_order(r);
-	}
 	Contest::TeamInfo::Array::point_iterator Contest::TeamInfo::teamByName(std::string const &sv)
 	{
 		return teams.find(sv);
