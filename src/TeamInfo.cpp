@@ -25,7 +25,7 @@ namespace reverSilly::ICPC
 	{
 		if(teams.find(t.name)!=teams.end())
 			throw std::invalid_argument{"Add failed: duplicated team name."};
-		dirty.insert(&teams.insert({t.name,{t,rank.end()}}).first->second);
+		teams.insert({t.name,{t,rank.end()}});
 	}
 	void Contest::TeamInfo::addProblem(Problem const *p)
 	{

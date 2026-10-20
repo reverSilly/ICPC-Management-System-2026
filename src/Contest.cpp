@@ -30,6 +30,8 @@ namespace reverSilly::ICPC
 	{
 		assertNotStarted("Start");
 		this->duration=duration;
+		for(auto &[k,v]:teams.teams)
+			v.second=teams.rank.insert(v.first).first;
 		flush();
 	}
 	void Contest::print(std::ostream &os)const
