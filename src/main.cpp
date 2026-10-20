@@ -54,6 +54,9 @@ int lowbit(int a)
 
 int main()
 {
+	cin.tie(nullptr);
+	cout.tie(nullptr);
+	ios::sync_with_stdio(false);
 	string op;
 	Contest c;
 	while(cin>>op)

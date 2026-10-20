@@ -83,7 +83,7 @@ namespace reverSilly::ICPC
 	{
 		int accepted,spenalty;
 		std::vector<int>AcceptedTime;
-		std::string name;
+		std::string_view name;
 
 		TeamRef(Team const &t):accepted{-t.accepted()},spenalty{},name{t.name}
 		{

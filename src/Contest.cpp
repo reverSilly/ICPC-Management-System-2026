@@ -30,7 +30,7 @@ namespace reverSilly::ICPC
 	{
 		assertNotStarted("Start");
 		this->duration=duration;
-		teams.rebuild();
+		flush();
 	}
 	void Contest::print(std::ostream &os)const
 	{
