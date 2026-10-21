@@ -70,6 +70,7 @@ namespace reverSilly::ICPC
 	{
 		std::string const name;
 		std::vector<ProblemStatus>status;
+		int rank;
 
 		Time penalty()const;//sigma status.penalty()
 		int accepted()const;//sigma status.accepted;
@@ -84,8 +85,9 @@ namespace reverSilly::ICPC
 		int accepted,spenalty;
 		std::vector<int>AcceptedTime;
 		std::string_view name;
+		Team *t;
 
-		TeamRef(Team const &t):accepted{-t.accepted()},spenalty{},name{t.name}
+		TeamRef(Team &t):accepted{-t.accepted()},spenalty{},name{t.name},t{&t}
 		{
 			AcceptedTime.reserve(-accepted);
 			for(auto &i:t.status)
@@ -108,7 +110,6 @@ namespace reverSilly::ICPC
 			{
 				Team first;
 				std::optional<Set::iterator> second;
-				int rank;
 			};
 			using Array=std::unordered_map<std::string,Payload>;
 			Array teams;

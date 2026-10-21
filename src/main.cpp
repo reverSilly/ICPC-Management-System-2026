@@ -68,7 +68,7 @@ int main()
 		if(op=="ADDTEAM")//why not ADD_TEAM
 		{
 			cin>>team;
-			c.addTeam(Team{.name=team,.status={}});
+			c.addTeam(Team{.name=team,.status={},.rank=-1});
 			info("Add successfully.");
 		}
 		if(op=="START")

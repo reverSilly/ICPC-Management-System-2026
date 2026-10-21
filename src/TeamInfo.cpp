@@ -15,13 +15,13 @@ namespace reverSilly::ICPC
 	}
 	int Contest::TeamInfo::rankByTeam(Array::const_iterator it)const
 	{
-		return it->second.rank;
+		return it->second.first.rank;
 	}
 	void Contest::TeamInfo::addTeam(Team const &t)
 	{
 		if(teams.find(t.name)!=teams.end())
 			throw std::invalid_argument{"Add failed: duplicated team name."};
-		teams.insert({t.name,{t,rank.end(),-1}});
+		teams.insert({t.name,{t,rank.end()}});
 	}
 	void Contest::TeamInfo::addProblem(Problem const *p)
 	{
@@ -41,7 +41,7 @@ namespace reverSilly::ICPC
 	{
 		int r=0;
 		for(auto &i:rank)
-			teams.find(std::string{i.name})->second.rank=r++;
+			i.t->rank=r++;
 	}
 	void Contest::TeamInfo::rebuild()
 	{
