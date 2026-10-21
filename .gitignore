@@ -1,1 +1,8 @@
 /build/
+
+# `cmake .` 原地构建产生的文件（评测机在自己的临时目录里构建，无需提交）
+/code
+/CMakeCache.txt
+/CMakeFiles/
+/cmake_install.cmake
+/Makefile
