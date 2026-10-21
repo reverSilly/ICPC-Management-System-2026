@@ -97,10 +97,10 @@ namespace reverSilly::ICPC
 			if(v.first.hasFrozen())
 				frozenTeam.insert({v.first});
 			rank.insert({v.first});
-			v.second.reset();
 		}
 		while(!frozenTeam.empty())
 		{
+		retry:
 			auto it=teams.teams.find(std::string(frozenTeam.rbegin()->name));
 			auto t=&it->second.first;
 			auto jt=rank.find({it->second.first});
@@ -111,9 +111,9 @@ namespace reverSilly::ICPC
 				nx=*next(jt);
 			if(it->second.second)
 			{
-				it->second.second.reset();
 				teams.rank.erase(*it->second.second);
 				teams.dirty.insert(&it->second);
+				it->second.second.reset();
 			}
 			frozenTeam.erase(prev(frozenTeam.end()));
 			rank.erase(jt);
@@ -121,10 +121,15 @@ namespace reverSilly::ICPC
 			{
 				if(p.isFrozen())
 				{
+					int i=p.frozen->triesAfter;
 					p.unfreeze();
-					break;
+					if(i)
+						goto done;
 				}
 			}
+			if(!frozenTeam.empty())
+				goto retry;
+		done:
 			TeamRef cur=*t;
 			jt=rank.insert(cur).first;
 			if(t->hasFrozen())

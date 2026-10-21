@@ -22,11 +22,15 @@ namespace reverSilly::ICPC
 	{
 		status[s.problem->id].add(s);
 	}
-	bool Team::hasFrozen()const
+	bool Team::hasFrozen()
 	{
 		for(auto &p:status)
-			if(p.isFrozen())
+		{
+			if(p.isFrozen()&&p.frozen->triesAfter)
 				return true;
+			else if(p.isFrozen())
+				p.unfreeze();
+		}
 		return false;
 	}
 	std::strong_ordering operator<=>(Team const &a,Team const &b)

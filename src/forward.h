@@ -74,7 +74,7 @@ namespace reverSilly::ICPC
 		Time penalty()const;//sigma status.penalty()
 		int accepted()const;//sigma status.accepted;
 		void add(Submission s);//status.add
-		bool hasFrozen()const;
+		bool hasFrozen();
 		friend std::strong_ordering operator<=>(const Team &a,const Team &b);//accepted|penalty|pass_time...|name
 	};
 	template<typename T>
