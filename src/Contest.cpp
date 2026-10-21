@@ -32,8 +32,8 @@ namespace reverSilly::ICPC
 		assertNotStarted("Start");
 		this->duration=duration;
 		for(auto &[k,v]:teams.teams)
-			v.second=teams.rank.insert(v.first).first;
-		teams.rerank();
+			v.second=teams.rank.insert(teams.rank.end(),v.first);
+		teams.rank.sort();
 		flush();
 	}
 	void Contest::print(std::ostream &os)const
@@ -89,23 +89,34 @@ namespace reverSilly::ICPC
 		os<<"[Info]Scroll scoreboard.\n";//this is not so elegant
 		flush();
 		print(os);
-		TeamInfo::Set frozenTeam;
+		std::set<TeamRef>rank,frozenTeam;
+		for(auto &i:teams.rank)
+			rank.insert(i);
 		for(auto&[k,v]:teams.teams)
 		{
 			if(v.first.hasFrozen())
 				frozenTeam.insert({v.first});
+			rank.insert({v.first});
+			v.second.reset();
 		}
 		while(!frozenTeam.empty())
 		{
 			auto it=teams.teams.find(std::string(frozenTeam.rbegin()->name));
 			auto t=&it->second.first;
+			auto jt=rank.find({it->second.first});
 			std::optional<TeamRef>pv,nx;
-			if(it->second.second!=teams.rank.begin())
-				pv=*prev(it->second.second);
-			if(next(it->second.second)!=teams.rank.end())
-				nx=*next(it->second.second);
+			if(jt!=rank.begin())
+				pv=*prev(jt);
+			if(next(jt)!=rank.end())
+				nx=*next(jt);
+			if(it->second.second)
+			{
+				it->second.second.reset();
+				teams.rank.erase(*it->second.second);
+				teams.dirty.insert(&it->second);
+			}
 			frozenTeam.erase(prev(frozenTeam.end()));
-			teams.rank.erase(it->second.second);
+			rank.erase(jt);
 			for(auto &p:t->status)
 			{
 				if(p.isFrozen())
@@ -115,13 +126,13 @@ namespace reverSilly::ICPC
 				}
 			}
 			TeamRef cur=*t;
-			it->second.second=teams.rank.insert(cur).first;
+			jt=rank.insert(cur).first;
 			if(t->hasFrozen())
 				frozenTeam.insert({*t});
 			if(nx&&nx<cur)
-				os<<t->name<<' '<<prev(it->second.second)->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
+				os<<t->name<<' '<<prev(jt)->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
 			else if(pv&&cur<pv)
-				os<<t->name<<' '<<next(it->second.second)->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
+				os<<t->name<<' '<<next(jt)->name<<' '<<t->accepted()<<' '<<t->penalty().t<<'\n';
 		}
 		flush();
 		print(os);

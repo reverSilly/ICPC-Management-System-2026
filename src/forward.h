@@ -12,6 +12,7 @@
 #include<utility>
 #include<numeric>
 #include<algorithm>
+#include<list>
 
 namespace reverSilly::ICPC
 {
@@ -101,12 +102,12 @@ namespace reverSilly::ICPC
 	{
 		struct TeamInfo
 		{
-			using Set=RankedSet<TeamRef>;
+			using Set=std::list<TeamRef>;
 			Set rank;
 			struct Payload
 			{
 				Team first;
-				Set::iterator second;
+				std::optional<Set::iterator> second;
 				int rank;
 			};
 			using Array=std::unordered_map<std::string,Payload>;

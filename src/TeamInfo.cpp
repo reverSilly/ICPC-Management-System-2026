@@ -46,9 +46,13 @@ namespace reverSilly::ICPC
 	void Contest::TeamInfo::rebuild()
 	{
 		for(auto i:dirty)
-			rank.erase(i->second);
+			if(i->second)
+				rank.erase(*i->second);
+		std::list<TeamRef>tmp;
 		for(auto i:dirty)
-			i->second=rank.insert(i->first).first;
+			i->second=tmp.insert(tmp.end(),i->first);
+		tmp.sort();
+		rank.merge(std::move(tmp));
 		dirty.clear();
 		rerank();
 	}
